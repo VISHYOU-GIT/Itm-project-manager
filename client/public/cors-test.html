@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORS Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>CORS Test Page</h1>
+  <p>Test API endpoints to check if CORS is working properly</p>
+  
+  <div>
+    <button id="testCors">Test CORS Endpoint</button>
+    <button id="testHealth">Test Health Endpoint</button>
+    <button id="testStudentLogin">Test Student Login</button>
+    <button id="testTeacherLogin">Test Teacher Login</button>
+  </div>
+  
+  <div id="result">
+    <h3>Result:</h3>
+    <pre id="resultData">Click a button to test an endpoint...</pre>
+  </div>
+
+  <script>
+    const serverUrl = 'https://server-h5vmxuq5n-vishyougits-projects.vercel.app';
+    const clientOrigin = 'https://client-mu-nine-82.vercel.app';
+    const resultElement = document.getElementById('resultData');
+
+    function displayResult(data) {
+      resultElement.textContent = typeof data === 'object' 
+        ? JSON.stringify(data, null, 2) 
+        : data;
+    }
+
+    function handleError(error) {
+      resultElement.textContent = `Error: ${error.message}\n\nThis could be due to CORS issues.`;
+      console.error('Error:', error);
+    }
+
+    document.getElementById('testCors').addEventListener('click', async () => {
+      try {
+        resultElement.textContent = 'Loading...';
+        const response = await fetch(`${serverUrl}/api/cors-test`);
+        const data = await response.json();
+        displayResult(data);
+      } catch (error) {
+        handleError(error);
+      }
+    });
+
+    document.getElementById('testHealth').addEventListener('click', async () => {
+      try {
+        resultElement.textContent = 'Loading...';
+        const response = await fetch(`${serverUrl}/api/health`);
+        const data = await response.json();
+        displayResult(data);
+      } catch (error) {
+        handleError(error);
+      }
+    });
+
+    document.getElementById('testStudentLogin').addEventListener('click', async () => {
+      try {
+        resultElement.textContent = 'Loading...';
+        const response = await fetch(`${serverUrl}/api/auth/student/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            rollNo: 'MCA2023001',
+            password: 'password123'
+          })
+        });
+        const data = await response.json();
+        displayResult(data);
+      } catch (error) {
+        handleError(error);
+      }
+    });
+
+    document.getElementById('testTeacherLogin').addEventListener('click', async () => {
+      try {
+        resultElement.textContent = 'Loading...';
+        const response = await fetch(`${serverUrl}/api/auth/teacher/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: 'teacher1',
+            password: 'password123'
+          })
+        });
+        const data = await response.json();
+        displayResult(data);
+      } catch (error) {
+        handleError(error);
+      }
+    });
+  </script>
+</body>
+</html>
